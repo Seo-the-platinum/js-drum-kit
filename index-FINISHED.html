@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JS Drum Kit</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+  <div class="keys">
+    <div data-key="65" class="key">
+      <kbd>A</kbd>
+      <span class="sound">clap</span>
+    </div>
+    <div data-key="83" class="key">
+      <kbd>S</kbd>
+      <span class="sound">hihat</span>
+    </div>
+    <div data-key="68" class="key">
+      <kbd>D</kbd>
+      <span class="sound">kick</span>
+    </div>
+    <div data-key="70" class="key">
+      <kbd>F</kbd>
+      <span class="sound">openhat</span>
+    </div>
+    <div data-key="71" class="key">
+      <kbd>G</kbd>
+      <span class="sound">boom</span>
+    </div>
+    <div data-key="72" class="key">
+      <kbd>H</kbd>
+      <span class="sound">ride</span>
+    </div>
+    <div data-key="74" class="key">
+      <kbd>J</kbd>
+      <span class="sound">snare</span>
+    </div>
+    <div data-key="75" class="key">
+      <kbd>K</kbd>
+      <span class="sound">tom</span>
+    </div>
+    <div data-key="76" class="key">
+      <kbd>L</kbd>
+      <span class="sound">tink</span>
+    </div>
+  </div>
+
+  <audio data-key="65" src="sounds/clap.wav"></audio>
+  <audio data-key="83" src="sounds/hihat.wav"></audio>
+  <audio data-key="68" src="sounds/kick.wav"></audio>
+  <audio data-key="70" src="sounds/openhat.wav"></audio>
+  <audio data-key="71" src="sounds/boom.wav"></audio>
+  <audio data-key="72" src="sounds/ride.wav"></audio>
+  <audio data-key="74" src="sounds/snare.wav"></audio>
+  <audio data-key="75" src="sounds/tom.wav"></audio>
+  <audio data-key="76" src="sounds/tink.wav"></audio>
+
+<script>
+  //removeTransition takes an event as a parameter. It will be passed the transitioned event. The transition event has the css properties that were changed due to adding the playing class to the div element. The properties that change are, all 4 border sides colors, the box shadow, and the transform property is added to change the size of the div. 
+  function removeTransition(e) {
+    //the if statement checks to see if the div element has a property name of transform, if it doesn't then that means the div element does not have the 'playing' class and therefor nothing needs to be done.
+    if (e.propertyName !== 'transform') return;
+    //if the div element does have the transform property, then that means the element has the 'playing' class inside its classList. The div is then targetted and the 'playing' class is removed.
+    e.target.classList.remove('playing');
+  }
+//playSound takes an event as a parameter. It will recieve its
+//event from the event listener. When a key is pressed, IE 'a',
+// the keydown is passed a parameter for play sound.
+//IE playSound(keydown). 
+  function playSound(e) {
+    //if 'a' is pressed, e.keyCode = '65'. Const audio
+    // then uses e.keyCode to grab the audio element with 
+    // a dataset that matches the value of e.keyCode.
+    // audio= audio element with dataset/ data-key value of
+    // '65'
+    console.log(e.key);
+    const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+    //grabs the div element that has the e.keyCode value matching its data-key/dataset value. IE, if 'a' e.keyCode is '65' and therefor the it looks for and grabs the div with the dataset of 65.
+    const key = document.querySelector(`div[data-key="${e.keyCode}"]`);
+    //if the value of e.keyCode doesn't have a matching dataset
+    // in the audio files, dont do anything. IE, if 't' is pushed
+    // e.keyCode equals '84', because none of the audio element have a value of '84' for their dataset, then the function doesnt return anything and ends.
+    if (!audio) return;
+    //the playing class is added to the divs class list
+    key.classList.add('playing');
+    //makes sure that the audio file will start at the beginning of the file. 00:00.
+    audio.currentTime = 0;
+    //plays the audio file
+    audio.play();
+  }
+  //collects all the div elements with an ID of 'key' and uses Array.from to change store them as an array instead of an html collection or html list. The array is stored in the keys variable. 
+  const keys = Array.from(document.querySelectorAll('.key'));
+  //forEach is used on the keys array to add the transitioned event listener. When the playSound function adds the 'playing' class to one of the div elements, a transition takes place in which the css properties change. IE the border color will change from black to green. when that change is completed, the transition event is fired. 
+  keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+  //adds event listener to dom. Any key that is pressed is
+  //passed through to the playSound function.
+  window.addEventListener('keydown', playSound);
+</script>
+
+
+</body>
+</html>
